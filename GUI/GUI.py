@@ -100,13 +100,13 @@ class Windows(QWidget):
         QMessageBox.information(self, "Info", "Processing started!")
 
 
-def run_app(handle_values=None):
+def run_app(confirm=None):
     app = QApplication(sys.argv)
     window = Windows()
 
     # Connect the signal to the provided handler if it exists
-    if handle_values:
-        window.values_confirmed.connect(handle_values)
+    if confirm:
+        window.values_confirmed.connect(confirm)
 
     window.show()
     app.exec_()

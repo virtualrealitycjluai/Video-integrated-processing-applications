@@ -3,7 +3,7 @@ from GUI import GUI
 user_input_values = {}  # init dict
 
 
-def handle_values(denoise, superres, filter_method, model, output_path, video_path):
+def confirm(denoise, superres, filter_method, model, output_path, video_path):
     # store value into dict
     user_input_values['denoise'] = denoise
     user_input_values['superres'] = superres
@@ -17,4 +17,4 @@ def handle_values(denoise, superres, filter_method, model, output_path, video_pa
     print(user_input_values)
 
 
-GUI.run_app(handle_values)
+GUI.run_app(confirm)
