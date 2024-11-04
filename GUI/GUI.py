@@ -26,7 +26,7 @@ class Windows(QWidget):
 
         # Video path label
         self.video_path_label = QLabel("Select your video path")
-        self.video_path_label.setStyleSheet("background-color: transparent; font-size: 16px;")
+        self.video_path_label.setStyleSheet("background-color: transparent;")
         layout.addWidget(self.video_path_label)
 
         # Button to choose video path
@@ -42,13 +42,13 @@ class Windows(QWidget):
 
         # Filter method dropdown
         self.filter_method_combo = QComboBox()
-        self.filter_method_combo.addItems(["Color blindness pattern", "Monochrome", "Eye protection"])
+        self.filter_method_combo.addItems(["", "Color blindness pattern", "Monochrome", "Eye protection"])
         layout.addWidget(QLabel("Choose filter method"))
         layout.addWidget(self.filter_method_combo)
 
         # Model selection dropdown
         self.model_combo = QComboBox()
-        self.model_combo.addItems(["Transformer", "CNN", "GAN"])
+        self.model_combo.addItems(["", "Transformer", "CNN", "GAN"])
         layout.addWidget(QLabel("Select model"))
         layout.addWidget(self.model_combo)
 
@@ -77,13 +77,15 @@ class Windows(QWidget):
             self.video_path_label.setText(f"Selected: {self.video_path}")
 
     def choose_output_path(self):
-        self.output_path, _ = QFileDialog.getSaveFileName(self, "Choose Output Path")
+        self.output_path = QFileDialog.getExistingDirectory(self, "Choose Output Directory")
 
     def clear_all(self):
         self.denoise_checkbox.setChecked(False)
         self.superres_checkbox.setChecked(False)
         self.filter_method_combo.setCurrentIndex(0)
         self.model_combo.setCurrentIndex(0)
+        self.video_path = ''
+        self.output_path = ''
         self.video_path_label.setText("Select your video path")  # Reset the video path label
 
     def confirm_action(self):
