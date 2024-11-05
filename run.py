@@ -1,5 +1,6 @@
 from GUI import GUI
 import cv2
+from filter import Monochrome, Eye_protection, Color_blindness_pattern
 
 
 user_input_values = {}  # init dict
@@ -28,6 +29,7 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path):
         print("Error: Could not find the video file")
         exit()
 
+    # frame operate
     while True:
         ret, frame = cap.read()
         if not ret:
@@ -35,6 +37,12 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path):
             break
 
         # use filter
+        if user_input_values['filter_method'] == 'Color blindness pattern':
+            frame = Color_blindness_pattern.filter(frame)
+        if user_input_values['filter_method'] == 'Monochrome':
+            frame = Monochrome.filter(frame)
+        if user_input_values['filter_method'] == 'Eye protection':
+            frame = Eye_protection.filter(frame)
 
     cap.release()
 
