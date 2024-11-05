@@ -2,53 +2,92 @@ from GUI import GUI
 import cv2
 from filter import Monochrome, Eye_protection, Color_blindness_pattern
 
-
-user_input_values = {}  # init dict
+# init dict
+user_input_values = {}
 
 
 def confirm(denoise, superres, filter_method, model, output_path, video_path):
-    # store value into dict
-    user_input_values['denoise'] = denoise  # bool
-    user_input_values['superres'] = superres  # bool
-    user_input_values['filter_method'] = filter_method  # string
-    user_input_values['model'] = model  # string
-    user_input_values['output_path'] = output_path  # string
-    user_input_values['video_path'] = video_path  # string
+    user_input_values['denoise'] = denoise
+    user_input_values['superres'] = superres
+    user_input_values['filter_method'] = filter_method
+    user_input_values['model'] = model
+    user_input_values['output_path'] = output_path
+    user_input_values['video_path'] = video_path
 
-    # print parameters
+    # test print
     print("Stored Values:")
     print(user_input_values)
 
-    # 错误判定
-    if output_path or video_path == '':
-        print("Warning: File path isn't defined")
+    # verify path
+    if not user_input_values['output_path'] or not user_input_values['video_path']:
+        print("Warning: File paths (video or output) aren't defined correctly.")
+        return
 
-    # read video file
+    # set filter
+    filter_function = None
+    if user_input_values['filter_method'] == 'Color blindness pattern':
+        filter_function = Color_blindness_pattern.filter
+    elif user_input_values['filter_method'] == 'Monochrome':
+        filter_function = Monochrome.filter
+    elif user_input_values['filter_method'] == 'Eye protection':
+        filter_function = Eye_protection.filter
+
+    # open video
     cap = cv2.VideoCapture(user_input_values['video_path'])
+    # error judge
     if not cap.isOpened():
-        print("Error: Could not find the video file")
-        exit()
+        print(f"Error: Could not open video file at {user_input_values['video_path']}.")
+        return
 
-    # frame operate
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            print("Can't receive frame (stream end?). Exiting ...")
-            break
+    frames = []  # store frame that after processing
 
-        # use filter
-        if user_input_values['filter_method'] == 'Color blindness pattern':
-            frame = Color_blindness_pattern.filter(frame)
-        if user_input_values['filter_method'] == 'Monochrome':
-            frame = Monochrome.filter(frame)
-        if user_input_values['filter_method'] == 'Eye protection':
-            frame = Eye_protection.filter(frame)
+    try:
+        # frame process
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                print("Can't receive frame (stream end?). Exiting ...")
+                break
 
-    cap.release()
+            # use frame
+            if filter_function:
+                frame = filter_function(frame)
 
-    # use super-resolution
+            # save changes
+            frames.append(frame)
 
-    # use model
+            # press 'q' to exit loop
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    finally:
+        cap.release()
+        # cv2.destroyAllWindows()
+
+    # super resolution
+    if user_input_values['superres']:
+        print("Applying super-resolution...")
+
+    # frame interpolation
+    if user_input_values['model']:
+        print(f"Applying model '{user_input_values['model']}'...")
+
+    # save video
+    if user_input_values['output_path']:
+        save_processed_video(frames, output_path)
 
 
+def save_processed_video(frames, output_path, fps=30):
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')  # set video encoder
+    height, width, _ = frames[0].shape  # get frame size
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+    for frame in frames:
+        out.write(frame)
+
+    out.release()
+    print(f"Processed video saved to {output_path}.")
+
+
+# run app
 GUI.run_app(confirm)
