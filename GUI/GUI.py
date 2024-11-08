@@ -48,7 +48,7 @@ class Windows(QWidget):
 
         # Model selection dropdown
         self.model_combo = QComboBox()
-        self.model_combo.addItems(["", "Transformer", "CNN", "GAN"])
+        self.model_combo.addItems(["", "Transformer", "CNN"])
         layout.addWidget(QLabel("Select model"))
         layout.addWidget(self.model_combo)
 

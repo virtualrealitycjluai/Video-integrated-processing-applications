@@ -4,6 +4,8 @@ from filter import Monochrome, Eye_protection, Color_blindness_pattern
 
 # init dict
 user_input_values = {}
+# init test output path
+test_output_path = 'output'
 
 
 def confirm(denoise, superres, filter_method, model, output_path, video_path):
@@ -41,28 +43,30 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path):
 
     frames = []  # store frame that after processing
 
-    try:
-        # frame process
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                print("Can't receive frame (stream end?). Exiting ...")
-                break
+    # frame process
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print("Can't receive frame (stream end?). Exiting ...")
+            break
 
-            # use frame
-            if filter_function:
-                frame = filter_function(frame)
+        # use frame
+        if filter_function:
+            frame = filter_function(frame)
 
-            # save changes
-            frames.append(frame)
+        # save changes
+        frames.append(frame)
 
-            # press 'q' to exit loop
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+        # press 'q' to exit loop
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-    finally:
-        cap.release()
-        # cv2.destroyAllWindows()
+    cap.release()
+    # cv2.destroyAllWindows()
+
+    # de-noise
+    if user_input_values['denoise']:
+        print("Applying de-noise...")
 
     # super resolution
     if user_input_values['superres']:
