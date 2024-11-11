@@ -83,6 +83,8 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path):
     if user_input_values['output_path']:
         save_processed_video(frames, output_path)
 
+    print("Finish Process")
+
 
 def save_processed_video(frames, output_path, fps=30):
     fourcc = cv2.VideoWriter_fourcc(*'XVID')  # set video encoder
