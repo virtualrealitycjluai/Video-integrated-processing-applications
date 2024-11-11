@@ -1,7 +1,7 @@
 from GUI import GUI
 import cv2
 from filter import Monochrome, Eye_protection, Color_blindness_pattern
-from film import frame_interpolation_UNet3D as fg
+from film import frame_interpolation_UNet3D
 
 
 # init dict
@@ -77,7 +77,7 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path):
     # frame interpolation
     if user_input_values['model']:
         print(f"Applying model '{user_input_values['model']}'...")
-        fg.frame_ntierpolation_UNet3D(user_input_values['video_path'], user_input_values['output_path'], 100)
+        frame_interpolation_UNet3D(user_input_values['video_path'], user_input_values['output_path'], 60)
 
     # save video
     if user_input_values['output_path']:
