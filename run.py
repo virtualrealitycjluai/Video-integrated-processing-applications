@@ -1,7 +1,7 @@
 from GUI import GUI
 import cv2
 from filter import Monochrome, Eye_protection, Color_blindness_pattern
-from film import frame_interpolation_UNet3D
+from env_bridge import env_distribute as ed
 
 
 # init dict
@@ -69,15 +69,17 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path):
     # de-noise
     if user_input_values['denoise']:
         print("Applying de-noise...")
+        ed.run_denoise()
 
     # super resolution
     if user_input_values['superres']:
         print("Applying super-resolution...")
+        ed.run_SuperResolution()
 
     # frame interpolation
     if user_input_values['model']:
         print(f"Applying model '{user_input_values['model']}'...")
-        frame_interpolation_UNet3D(user_input_values['video_path'], user_input_values['output_path'], 60)
+        ed.run_film(user_input_values['video_path'], user_input_values['output_path'], 60)
 
     # save video
     if user_input_values['output_path']:

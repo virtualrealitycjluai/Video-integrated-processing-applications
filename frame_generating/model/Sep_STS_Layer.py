@@ -9,6 +9,7 @@ from operator import mul
 from einops import rearrange
 from einops.layers.torch import Rearrange
 
+
 class Mlp(nn.Module):
     """ Multilayer perceptron."""
 

@@ -1,9 +1,9 @@
-import os
 import cv2
 import torch
 import numpy as np
 from torchvision import transforms
 from frame_generating.model.VFIT_S import UNet_3D_3D
+import sys
 
 
 def preprocess_frame(frame, device):
@@ -32,7 +32,7 @@ def frame_interpolation_UNet3D(video_path='video/4.mp4', output_video_path='outp
     model = model.to(device)
     model.eval()
 
-    checkpoint = torch.load('frame_generating/checkpoints/VFIT_S/model_best.pth', map_location=device)
+    checkpoint = torch.load('../frame_generating/checkpoints/VFIT_S/model_best.pth', map_location=device)
     state_dict = checkpoint['state_dict']
 
     from collections import OrderedDict
@@ -105,3 +105,11 @@ def frame_interpolation_UNet3D(video_path='video/4.mp4', output_video_path='outp
     cap.release()
     out.release()
     print("Video interpolation completed and saved to", output_video_path)
+
+
+if __name__ == "__main__":
+    video_path = sys.argv[1]
+    output_video_path = sys.argv[2]
+    aim_fps = int(sys.argv[3])
+
+    frame_interpolation_UNet3D(video_path, output_video_path, aim_fps)
