@@ -112,4 +112,4 @@ if __name__ == "__main__":
     output_video_path = sys.argv[2]
     aim_fps = int(sys.argv[3])
 
-    frame_interpolation_UNet3D(video_path, output_video_path, aim_fps)
+    frame_interpolation_UNet3D(r'E:\projectDeeplearning\video\4.mp4', r'E:\projectDeeplearning\output\output_video.mp4', 60)

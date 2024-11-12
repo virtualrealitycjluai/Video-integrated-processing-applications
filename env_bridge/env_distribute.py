@@ -49,7 +49,7 @@ def run_film_task(env_path, script_path, task_name, log_file, video_path, output
         print(f"执行错误: 无法运行 {task_name}:\n{e}")
 
 
-def run_SuperResolution_task(env_path, script_path, task_name, log_file):
+def run_SuperResolution_task(env_path, script_path, task_name, log_file, video_path, output_video_path):
     if sys.platform == "win32":
         python_executable = os.path.join(env_path, "python.exe")
     else:
@@ -65,7 +65,7 @@ def run_SuperResolution_task(env_path, script_path, task_name, log_file):
 
     try:
         subprocess.Popen(
-            [python_executable, script_path],
+            [python_executable, script_path, video_path, output_video_path],
             cwd=os.path.dirname(script_path),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
@@ -77,7 +77,7 @@ def run_SuperResolution_task(env_path, script_path, task_name, log_file):
         print(f"执行错误: 无法运行 {task_name}:\n{e}")
 
 
-def run_denoise_task(env_path, script_path, task_name, log_file):
+def run_denoise_task(env_path, script_path, task_name, log_file, video_path, output_video_path):
     if sys.platform == "win32":
         python_executable = os.path.join(env_path, "python.exe")
     else:
@@ -93,7 +93,7 @@ def run_denoise_task(env_path, script_path, task_name, log_file):
 
     try:
         subprocess.Popen(
-            [python_executable, script_path],
+            [python_executable, script_path, video_path, output_video_path],
             cwd=os.path.dirname(script_path),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
@@ -123,24 +123,27 @@ def monitor_log(log_file, task_name):
     print(f"--- {task_name} 输出 ---\n{content}\n")
 
 
-def run_film(video_path='video/4.mp4', output_video_path='output/output_video.mp4', aim_fps=60):
+def run_film(video_path=r'E:\projectDeeplearning\video\4.mp4',
+             output_video_path=r'E:\projectDeeplearning\output\output_video.mp4', aim_fps=60):
     # 指定虚拟环境路径
-    env_path = r""
+    env_path = r"E:\projectDeeplearning\environment\dl"
     # 要执行的脚本
     script_path = r"E:\projectDeeplearning\env_bridge\film.py"
     log_file = os.path.join(os.path.dirname(script_path), "film.log")
     run_film_task(env_path, script_path, "film", log_file, video_path, output_video_path, aim_fps)
 
 
-def run_SuperResolution():
+def run_SuperResolution(video_path=r'E:\projectDeeplearning\video\4.mp4',
+                        output_video_path=r'E:\projectDeeplearning\output\output_video.mp4'):
     env_path = r""
-    script_path = r"E:\projectDeeplearning\env_bridge\SuperResolution.py"
+    script_path = r"SuperResolution\inference_realesrgan_video.py"
     log_file = os.path.join(os.path.dirname(script_path), "SuperResolution.log")
-    run_SuperResolution_task(env_path, script_path, "SuperResolution", log_file)
+    run_SuperResolution_task(env_path, script_path, "SuperResolution", log_file, video_path, output_video_path)
 
 
-def run_denoise():
+def run_denoise(video_path=r'E:\projectDeeplearning\video\4.mp4',
+                output_video_path=r'E:\projectDeeplearning\output\output_video.mp4'):
     env_path = r""
     script_path = r"E:\projectDeeplearning\env_bridge\denoise.py"
     log_file = os.path.join(os.path.dirname(script_path), "denoise.log")
-    run_denoise_task(env_path, script_path, "denoise", log_file)
+    run_denoise_task(env_path, script_path, "denoise", log_file, video_path, output_video_path)

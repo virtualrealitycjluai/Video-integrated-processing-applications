@@ -2,103 +2,77 @@ from GUI import GUI
 import cv2
 from filter import Monochrome, Eye_protection, Color_blindness_pattern
 from env_bridge import env_distribute as ed
+import os
+import tempfile
+import shutil
+import time
 
 
-# init dict
-user_input_values = {}
-# init test output path
-test_output_path = 'output'
+def generate_unique_path(path):
+    """
+    检查路径是否已存在，若存在则添加时间戳确保唯一性。
+    """
+    if os.path.exists(path):
+        base, ext = os.path.splitext(path)
+        timestamp = int(time.time())
+        path = f"{base}_{timestamp}{ext}"
+    return path
 
 
 def confirm(denoise, superres, filter_method, model, output_path, video_path):
-    user_input_values['denoise'] = denoise
-    user_input_values['superres'] = superres
-    user_input_values['filter_method'] = filter_method
-    user_input_values['model'] = model
-    user_input_values['output_path'] = output_path
-    user_input_values['video_path'] = video_path
+    user_input_values = {
+        'denoise': denoise,
+        'superres': superres,
+        'filter_method': filter_method,
+        'model': model,
+        'output_path': output_path,
+        'video_path': video_path
+    }
+    print("Stored Values:", user_input_values)
 
-    # test print
-    print("Stored Values:")
-    print(user_input_values)
-
-    # verify path
-    if not user_input_values['output_path'] or not user_input_values['video_path']:
+    if not output_path or not video_path:
         print("Warning: File paths (video or output) aren't defined correctly.")
         return
 
-    # set filter
-    filter_function = None
-    if user_input_values['filter_method'] == 'Color blindness pattern':
-        filter_function = Color_blindness_pattern.filter
-    elif user_input_values['filter_method'] == 'Monochrome':
-        filter_function = Monochrome.filter
-    elif user_input_values['filter_method'] == 'Eye protection':
-        filter_function = Eye_protection.filter
+    filter_function = {
+        'Color blindness pattern': Color_blindness_pattern.filter,
+        'Monochrome': Monochrome.filter,
+        'Eye protection': Eye_protection.filter
+    }.get(filter_method)
 
-    # open video
-    cap = cv2.VideoCapture(user_input_values['video_path'])
-    # error judge
+    cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
-        print(f"Error: Could not open video file at {user_input_values['video_path']}.")
+        print(f"Error: Could not open video file at {video_path}.")
         return
 
-    frames = []  # store frame that after processing
-
-    # frame process
+    frames = []
     while True:
         ret, frame = cap.read()
         if not ret:
             print("Can't receive frame (stream end?). Exiting ...")
             break
-
-        # use frame
         if filter_function:
             frame = filter_function(frame)
-
-        # save changes
         frames.append(frame)
-
-        # press 'q' to exit loop
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-
     cap.release()
-    # cv2.destroyAllWindows()
 
-    # de-noise
-    if user_input_values['denoise']:
-        print("Applying de-noise...")
-        ed.run_denoise()
-
-    # super resolution
-    if user_input_values['superres']:
-        print("Applying super-resolution...")
-        ed.run_SuperResolution()
-
-    # frame interpolation
-    if user_input_values['model']:
-        print(f"Applying model '{user_input_values['model']}'...")
-        ed.run_film(user_input_values['video_path'], user_input_values['output_path'], 60)
-
-    # save video
-    if user_input_values['output_path']:
-        save_processed_video(frames, output_path)
+    temp_dir = tempfile.mkdtemp()
+    try:
+        if denoise:
+            ed.run_denoise(video_path, temp_dir)
+        if model:
+            ed.run_film(temp_dir if denoise else video_path, temp_dir, 60)
+        if superres:
+            final_output_path = generate_unique_path(output_path)
+            ed.run_SuperResolution(temp_dir if model or denoise else video_path, final_output_path)
+    finally:
+        shutil.rmtree(temp_dir)
 
     print("Finish Process")
 
 
-def save_processed_video(frames, output_path, fps=30):
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')  # set video encoder
-    height, width, _ = frames[0].shape  # get frame size
-    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
-
-    for frame in frames:
-        out.write(frame)
-
-    out.release()
-    print(f"Processed video saved to {output_path}.")
-
-
 # run app
 GUI.run_app(confirm)
+
