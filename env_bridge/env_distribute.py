@@ -79,11 +79,13 @@ log_file_film = os.path.join(os.path.dirname(script_path_film), "film.log")
 log_file_denoise = os.path.join(os.path.dirname(script_path_denoise), "denoise.log")
 log_file_superres = os.path.join(os.path.dirname(script_path_superres), "SuperResolution.log")
 
+
 def run_film(video_path, output_video_path, aim_fps):
     run_film_task(env_path_film, script_path_film, "film", log_file_film, video_path, output_video_path, aim_fps)
 
 def run_SuperResolution(video_path, output_video_path):
     run_film_task(env_path_super_resolution, script_path_superres, "SuperResolution", log_file_superres, video_path, output_video_path, aim_fps=None)
+
 
 def run_denoise(video_path, output_video_path):
     run_film_task(env_path_denoisy, script_path_denoise, "denoise", log_file_denoise, video_path, output_video_path, aim_fps=None)

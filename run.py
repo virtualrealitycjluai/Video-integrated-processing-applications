@@ -19,6 +19,26 @@ def generate_unique_path(path):
     return path
 
 
+def copy_files_from_cache_to_destination(cache_folder, destination_folder):
+    # 检查缓存文件夹是否存在
+    if not os.path.exists(cache_folder):
+        print(f"缓存文件夹 {cache_folder} 不存在")
+        return
+
+    # 遍历缓存文件夹中的所有文件和子文件夹
+    for root, dirs, files in os.walk(cache_folder):
+        for file in files:
+            # 构建缓存文件的完整路径
+            cache_file_path = os.path.join(root, file)
+
+            # 构建目标文件的完整路径
+            destination_file_path = os.path.join(destination_folder, file)
+
+            # 复制文件到目标路径
+            shutil.copy2(cache_file_path, destination_file_path)
+            print(f"已复制 {cache_file_path} 到 {destination_file_path}")
+
+
 def confirm(denoise, superres, filter_method, model, output_path, video_path):
     user_input_values = {
         'denoise': denoise,
@@ -62,8 +82,12 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path):
     try:
         if denoise:
             ed.run_denoise(video_path, temp_dir)
+            if not(model or superres):
+                copy_files_from_cache_to_destination(temp_dir, output_path)
         if model:
             ed.run_film(temp_dir if denoise else video_path, temp_dir, 60)
+            if not superres:
+                copy_files_from_cache_to_destination(temp_dir, output_path)
         if superres:
             final_output_path = generate_unique_path(output_path)
             ed.run_SuperResolution(temp_dir if model or denoise else video_path, final_output_path)
