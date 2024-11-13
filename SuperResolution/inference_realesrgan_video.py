@@ -324,10 +324,9 @@ def run(args):
     os.remove(f'{args.output}/{args.video_name}_vidlist.txt')
 
 
-def main(video_path, output_video_path):
+def main(video_path, output_video_path, superres):
     """Inference demo for Real-ESRGAN.
     It mainly for restoring anime videos.
-
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str, default=video_path, help='Input video, image or folder')
@@ -372,6 +371,13 @@ def main(video_path, output_video_path):
         help='Image extension. Options: auto | jpg | png, auto means using the same extension as inputs')
     args = parser.parse_args()
 
+    # Set outscale based on superres value
+    if superres in ['x2', 'x3', 'x4']:
+        args.outscale = int(superres[1])  # Extract the multiplier as integer (2, 3, or 4)
+    else:
+        print("Invalid superres value. Using default x4 scale.")
+        args.outscale = 4
+
     args.input = args.input.rstrip('/').rstrip('\\')
     os.makedirs(args.output, exist_ok=True)
 
@@ -398,4 +404,5 @@ def main(video_path, output_video_path):
 if __name__ == '__main__':
     video_path = sys.argv[1]
     output_video_path = sys.argv[2]
-    main(video_path, output_video_path)
+    superres = sys.argv[3]
+    main(video_path, output_video_path, superres)

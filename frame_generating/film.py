@@ -1,10 +1,12 @@
 import cv2
 import torch
-import numpy
-print("Numpy version:", numpy.__version__)
+import numpy as np
 from torchvision import transforms
 from frame_generating.model.VFIT_S import UNet_3D_3D
 import sys
+
+
+print("Numpy version:", np.__version__)
 
 
 def preprocess_frame(frame, device):
@@ -25,7 +27,6 @@ def postprocess_frame(tensor):
 
 
 def frame_interpolation_UNet3D(video_path='video/4.mp4', output_video_path='output/output_video.mp4', aim_fps=60):
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # 加载模型
@@ -33,7 +34,7 @@ def frame_interpolation_UNet3D(video_path='video/4.mp4', output_video_path='outp
     model = model.to(device)
     model.eval()
 
-    checkpoint = torch.load('../frame_generating/checkpoints/VFIT_S/model_best.pth', map_location=device)
+    checkpoint = torch.load('checkpoints/VFIT_S/model_best.pth', map_location=device)
     state_dict = checkpoint['state_dict']
 
     from collections import OrderedDict
@@ -86,11 +87,12 @@ def frame_interpolation_UNet3D(video_path='video/4.mp4', output_video_path='outp
         interpolated_frame = postprocess_frame(output)
 
         # 调整大小以显示
-        interpolated_frame_resized = cv2.resize(interpolated_frame, (frame_buffer[1].shape[1], frame_buffer[1].shape[0]))
+        interpolated_frame_resized = cv2.resize(interpolated_frame,
+                                                (frame_buffer[1].shape[1], frame_buffer[1].shape[0]))
 
         # 将原始帧和插值帧写入视频
-        out.write(frame_buffer[1])               # 写入当前帧
-        out.write(interpolated_frame_resized)    # 写入插值帧
+        out.write(frame_buffer[1])  # 写入当前帧
+        out.write(interpolated_frame_resized)  # 写入插值帧
 
         # 读取下一帧并更新帧缓冲区
         ret, next_frame = cap.read()
@@ -114,4 +116,3 @@ if __name__ == "__main__":
     aim_fps = int(sys.argv[3])
 
     frame_interpolation_UNet3D(video_path, output_video_path, aim_fps)
-

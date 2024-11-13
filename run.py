@@ -39,14 +39,16 @@ def copy_files_from_cache_to_destination(cache_folder, destination_folder):
             print(f"已复制 {cache_file_path} 到 {destination_file_path}")
 
 
-def confirm(denoise, superres, filter_method, model, output_path, video_path):
+def confirm(denoise, superres, filter_method, model, output_path, video_path, superres_scale, frame_rate):
     user_input_values = {
         'denoise': denoise,
         'superres': superres,
         'filter_method': filter_method,
         'model': model,
         'output_path': output_path,
-        'video_path': video_path
+        'video_path': video_path,
+        'superres_scale': superres_scale,
+        'frame_rate': frame_rate
     }
     print("Stored Values:", user_input_values)
 
@@ -85,12 +87,12 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path):
             if not(model or superres):
                 copy_files_from_cache_to_destination(temp_dir, output_path)
         if model:
-            ed.run_film(temp_dir if denoise else video_path, temp_dir, 60)
+            ed.run_film(temp_dir if denoise else video_path, temp_dir, frame_rate)
             if not superres:
                 copy_files_from_cache_to_destination(temp_dir, output_path)
         if superres:
             final_output_path = generate_unique_path(output_path)
-            ed.run_SuperResolution(temp_dir if model or denoise else video_path, final_output_path)
+            ed.run_SuperResolution(temp_dir if model or denoise else video_path, final_output_path, superres_scale)
     finally:
         shutil.rmtree(temp_dir)
 
