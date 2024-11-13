@@ -70,10 +70,12 @@ def monitor_log(log_file, task_name):
 # 设定环境路径和脚本路径
 # env_path = r"E:\projectDeeplearning\environment\dl"
 env_path_film = r"d:\anaconda3\envs\dl"
-script_path_film = r"E:\project_g3\deep_learning\projectDeeplearning\film.py"
+
+script_path_film = r"E:\project_g3\deep_learning\projectDeeplearning\frame_generating\film.py"
 script_path_denoise = r"E:\projectDeeplearning\env_bridge\denoise.py"
 script_path_superres = r"SuperResolution\inference_realesrgan_video.py"
-
+env_path_super_resolution = ""
+env_path_denoisy = ""
 # 日志文件路径
 log_file_film = os.path.join(os.path.dirname(script_path_film), "film.log")
 log_file_denoise = os.path.join(os.path.dirname(script_path_denoise), "denoise.log")
