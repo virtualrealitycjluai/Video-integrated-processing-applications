@@ -51,6 +51,72 @@ def run_film_task(env_path, script_path, task_name, log_file, video_path, output
         print(f"执行错误: 无法运行 {task_name}:\n{e}")
 
 
+def run_SuperResolution_task(env_path, script_path, task_name, log_file, video_path, output_video_path, superres_scale):
+    if sys.platform == "win32":
+        python_executable = os.path.join(env_path, "python.exe")
+    else:
+        python_executable = os.path.join(env_path, "bin", "python")
+
+    if not os.path.isfile(python_executable):
+        print(f"错误: 找不到Python解释器：{python_executable}")
+        return
+
+    if not os.path.isfile(script_path):
+        print(f"错误: 找不到脚本文件：{script_path}")
+        return
+    command = f'conda activate dl && {python_executable} {script_path} {video_path} {output_video_path} {superres_scale}'
+    try:
+        process = subprocess.Popen(
+            command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=os.path.dirname(script_path)
+        )
+        stdout, stderr = process.communicate()
+
+        print("Standard Output:\n", stdout.decode())
+        print("Standard Error:\n", stderr.decode())
+        print(os.path.dirname(script_path))
+        print(f"提示: {task_name} 已启动。")
+        threading.Thread(target=monitor_log, args=(log_file, task_name), daemon=True).start()
+    except Exception as e:
+        print(f"执行错误: 无法运行 {task_name}:\n{e}")
+
+
+def run_denoise_task(env_path, script_path, task_name, log_file, video_path, output_video_path):
+    if sys.platform == "win32":
+        python_executable = os.path.join(env_path, "python.exe")
+    else:
+        python_executable = os.path.join(env_path, "bin", "python")
+
+    if not os.path.isfile(python_executable):
+        print(f"错误: 找不到Python解释器：{python_executable}")
+        return
+
+    if not os.path.isfile(script_path):
+        print(f"错误: 找不到脚本文件：{script_path}")
+        return
+    command = f'conda activate dl && {python_executable} {script_path} {video_path} {output_video_path}'
+    try:
+        process = subprocess.Popen(
+            command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=os.path.dirname(script_path)
+        )
+        stdout, stderr = process.communicate()
+
+        print("Standard Output:\n", stdout.decode())
+        print("Standard Error:\n", stderr.decode())
+        print(os.path.dirname(script_path))
+        print(f"提示: {task_name} 已启动。")
+        threading.Thread(target=monitor_log, args=(log_file, task_name), daemon=True).start()
+    except Exception as e:
+        print(f"执行错误: 无法运行 {task_name}:\n{e}")
+
+
 def monitor_log(log_file, task_name):
     """
     监控日志文件的变化，并将内容打印到控制台。
@@ -70,12 +136,12 @@ def monitor_log(log_file, task_name):
 # 设定环境路径和脚本路径
 # env_path = r"E:\projectDeeplearning\environment\dl"
 env_path_film = r"d:\anaconda3\envs\dl"
-
+env_path_super_resolution = ""
+env_path_denoisy = ""
 script_path_film = r"E:\project_g3\deep_learning\projectDeeplearning\frame_generating\film.py"
 script_path_denoise = r"E:\projectDeeplearning\env_bridge\denoise.py"
 script_path_superres = r"SuperResolution\inference_realesrgan_video.py"
-env_path_super_resolution = ""
-env_path_denoisy = ""
+
 # 日志文件路径
 log_file_film = os.path.join(os.path.dirname(script_path_film), "film.log")
 log_file_denoise = os.path.join(os.path.dirname(script_path_denoise), "denoise.log")
@@ -83,11 +149,15 @@ log_file_superres = os.path.join(os.path.dirname(script_path_superres), "SuperRe
 
 
 def run_film(video_path, output_video_path, aim_fps):
-    run_film_task(env_path_film, script_path_film, "film", log_file_film, video_path, output_video_path, aim_fps)
+    run_film_task(env_path_film, script_path_film,
+                  "film", log_file_film, video_path, output_video_path, aim_fps)
 
-def run_SuperResolution(video_path, output_video_path):
-    run_film_task(env_path_super_resolution, script_path_superres, "SuperResolution", log_file_superres, video_path, output_video_path, aim_fps=None)
+
+def run_SuperResolution(video_path, output_video_path, superres_scale):
+    run_SuperResolution_task(env_path_super_resolution, script_path_superres,
+                             "SuperResolution", log_file_superres, video_path, output_video_path, superres_scale)
 
 
 def run_denoise(video_path, output_video_path):
-    run_film_task(env_path_denoisy, script_path_denoise, "denoise", log_file_denoise, video_path, output_video_path, aim_fps=None)
+    run_denoise_task(env_path_denoisy, script_path_denoise,
+                     "denoise", log_file_denoise, video_path, output_video_path)

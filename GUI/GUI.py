@@ -1,14 +1,14 @@
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel, QPushButton, QCheckBox,
-    QComboBox, QFileDialog, QFrame, QMessageBox
+    QComboBox, QFileDialog, QFrame, QMessageBox, QLineEdit
 )
 from PyQt5.QtGui import QPixmap, QPalette, QBrush, QIcon
 from PyQt5.QtCore import Qt, pyqtSignal
 
 
 class Windows(QWidget):
-    values_confirmed = pyqtSignal(bool, bool, str, str, str, str)
+    values_confirmed = pyqtSignal(bool, bool, str, str, str, str, str, str)
 
     def __init__(self):
         super().__init__()
@@ -23,8 +23,9 @@ class Windows(QWidget):
 
         # Main layout
         layout = QVBoxLayout()
-
+        # 增加输入框，输入目标帧率
         # Video path label
+        self.frame_in = QLabel("Frame interpolation")
         self.video_path_label = QLabel("Select your video path")
         self.video_path_label.setStyleSheet("background-color: transparent;")
         layout.addWidget(self.video_path_label)
@@ -40,6 +41,12 @@ class Windows(QWidget):
         layout.addWidget(self.denoise_checkbox)
         layout.addWidget(self.superres_checkbox)
 
+        # Super-resolution scale options (x2, x3, x4)
+        self.superres_scale_combo = QComboBox()
+        self.superres_scale_combo.addItems(["", "x2", "x3", "x4"])
+        layout.addWidget(QLabel("Select super-resolution scale"))
+        layout.addWidget(self.superres_scale_combo)
+
         # Filter method dropdown
         self.filter_method_combo = QComboBox()
         self.filter_method_combo.addItems(["", "Color blindness pattern", "Monochrome", "Eye protection"])
@@ -51,6 +58,12 @@ class Windows(QWidget):
         self.model_combo.addItems(["", "Transformer", "UNet-3D"])
         layout.addWidget(QLabel("Select model"))
         layout.addWidget(self.model_combo)
+
+        # Target frame rate input box
+        self.frame_rate_input = QLineEdit()
+        self.frame_rate_input.setPlaceholderText("Enter target frame rate")
+        layout.addWidget(QLabel("Enter target frame rate"))
+        layout.addWidget(self.frame_rate_input)
 
         # Output path button
         self.output_path_button = QPushButton("Choose output path")
@@ -84,6 +97,8 @@ class Windows(QWidget):
         self.superres_checkbox.setChecked(False)
         self.filter_method_combo.setCurrentIndex(0)
         self.model_combo.setCurrentIndex(0)
+        self.superres_scale_combo.setCurrentIndex(0)
+        self.frame_rate_input.setText('')
         self.video_path = ''
         self.output_path = ''
         self.video_path_label.setText("Select your video path")  # Reset the video path label
@@ -95,8 +110,13 @@ class Windows(QWidget):
         model = self.model_combo.currentText()
         output_path = getattr(self, 'output_path', '')
         video_path = getattr(self, 'video_path', '')
+        superres_scale = self.superres_scale_combo.currentText()  # 获取超分倍率
+        frame_rate = self.frame_rate_input.text()  # 使用 .text() 获取帧率输入
 
-        self.values_confirmed.emit(denoise, superres, filter_method, model, output_path, video_path)
+        self.values_confirmed.emit(
+            denoise, superres, filter_method, model,
+            output_path, video_path, superres_scale, frame_rate
+        )
         QMessageBox.information(self, "Info", "Processing started!")
 
 
