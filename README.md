@@ -2,6 +2,32 @@
 
     本软件集成了视频的降噪，超分，插帧等功能。
 
+## 硬件及平台要求 
+ NVIDIA系列显卡（支持CUDA，4GB显存及以上）
+ windows 10及以上
+
+## 1 安装
+### 1.1 安装[anaconda](https://www.anaconda.com/download/success)
+此项目基于不同的深度学习方法实现，包管理器是必要的。[什么是anaconda？](https://www.zhihu.com/tardis/zm/art/96990748)
+### 1.2 新建一个虚拟环境
+找到anaconda安装目录，点击地址栏，键入cmd
+![图片说明](example.png)  
+在打开的命令行窗口中依次执行下述语句
+
+    cd Anaconda3/condabin
+    conda activate
+    conda create -n env_1 python == 3.7.6
+### 1.3 进入虚拟环境
+    conda activate env_1
+### 1.4 安装所需的python软件包
+* pytorch==1.5.1 torchvision==0.6.1
+* cudatoolkit==10.1
+* cupy==7.5.0
+* pillow==8.2.0
+* einops==0.3.0
+  
+  [如何安装python软件包？](https://blog.csdn.net/qq_42692386/article/details/113881379)
+    
 ## 降噪
 
 ## 超分
