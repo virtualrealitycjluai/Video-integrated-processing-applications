@@ -20,6 +20,7 @@ try:
     import ffmpeg
 except ImportError:
     import pip
+
     pip.main(['install', '--user', 'ffmpeg-python'])
     import ffmpeg
 
@@ -69,7 +70,7 @@ class Reader:
             self.stream_reader = (
                 ffmpeg.input(video_path).output('pipe:', format='rawvideo', pix_fmt='bgr24',
                                                 loglevel='error').run_async(
-                                                    pipe_stdin=True, pipe_stdout=True, cmd=args.ffmpeg_bin))
+                    pipe_stdin=True, pipe_stdout=True, cmd=args.ffmpeg_bin))
             meta = get_video_meta_info(video_path)
             self.width = meta['width']
             self.height = meta['height']
@@ -147,20 +148,20 @@ class Writer:
             self.stream_writer = (
                 ffmpeg.input('pipe:', format='rawvideo', pix_fmt='bgr24', s=f'{out_width}x{out_height}',
                              framerate=fps).output(
-                                 audio,
-                                 video_save_path,
-                                 pix_fmt='yuv420p',
-                                 vcodec='libx264',
-                                 loglevel='error',
-                                 acodec='copy').overwrite_output().run_async(
-                                     pipe_stdin=True, pipe_stdout=True, cmd=args.ffmpeg_bin))
+                    audio,
+                    video_save_path,
+                    pix_fmt='yuv420p',
+                    vcodec='libx264',
+                    loglevel='error',
+                    acodec='copy').overwrite_output().run_async(
+                    pipe_stdin=True, pipe_stdout=True, cmd=args.ffmpeg_bin))
         else:
             self.stream_writer = (
                 ffmpeg.input('pipe:', format='rawvideo', pix_fmt='bgr24', s=f'{out_width}x{out_height}',
                              framerate=fps).output(
-                                 video_save_path, pix_fmt='yuv420p', vcodec='libx264',
-                                 loglevel='error').overwrite_output().run_async(
-                                     pipe_stdin=True, pipe_stdout=True, cmd=args.ffmpeg_bin))
+                    video_save_path, pix_fmt='yuv420p', vcodec='libx264',
+                    loglevel='error').overwrite_output().run_async(
+                    pipe_stdin=True, pipe_stdout=True, cmd=args.ffmpeg_bin))
 
     def write_frame(self, frame):
         frame = frame.astype(np.uint8).tobytes()
@@ -329,7 +330,7 @@ def main(video_path, output_video_path, superres):
     It mainly for restoring anime videos.
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', type=str, default=video_path, help='Input video, image or folder')
+    parser.add_argument('-i', '--input', type=str, help='Input video, image or folder')
     parser.add_argument(
         '-n',
         '--model_name',
@@ -338,7 +339,7 @@ def main(video_path, output_video_path, superres):
         help=('Model names: realesr-animevideov3 | RealESRGAN_x4plus_anime_6B | RealESRGAN_x4plus | RealESRNet_x4plus |'
               ' RealESRGAN_x2plus | realesr-general-x4v3'
               'Default:realesr-animevideov3'))
-    parser.add_argument('-o', '--output', type=str, default=output_video_path, help='Output folder')
+    parser.add_argument('-o', '--output', type=str, help='Output folder')
     parser.add_argument(
         '-dn',
         '--denoise_strength',
@@ -370,7 +371,8 @@ def main(video_path, output_video_path, superres):
         default='auto',
         help='Image extension. Options: auto | jpg | png, auto means using the same extension as inputs')
     args = parser.parse_args()
-
+    args.input = video_path
+    args.output = output_video_path
     # Set outscale based on superres value
     if superres in ['x2', 'x3', 'x4']:
         args.outscale = int(superres[1])  # Extract the multiplier as integer (2, 3, or 4)

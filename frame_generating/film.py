@@ -2,7 +2,7 @@ import cv2
 import torch
 import numpy as np
 from torchvision import transforms
-from frame_generating.model.VFIT_S import UNet_3D_3D
+from model.VFIT_S import UNet_3D_3D
 import sys
 
 

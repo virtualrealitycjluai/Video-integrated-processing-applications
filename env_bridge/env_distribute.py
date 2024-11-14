@@ -64,7 +64,7 @@ def run_SuperResolution_task(env_path, script_path, task_name, log_file, video_p
     if not os.path.isfile(script_path):
         print(f"错误: 找不到脚本文件：{script_path}")
         return
-    command = f'conda activate dl && {python_executable} {script_path} {video_path} {output_video_path} {superres_scale}'
+    command = f'conda activate lecory && {python_executable} {script_path} {video_path} {output_video_path} {superres_scale}'
     try:
         process = subprocess.Popen(
             command,
@@ -97,7 +97,7 @@ def run_denoise_task(env_path, script_path, task_name, log_file, video_path, out
     if not os.path.isfile(script_path):
         print(f"错误: 找不到脚本文件：{script_path}")
         return
-    command = f'conda activate dl && {python_executable} {script_path} {video_path} {output_video_path}'
+    command = f'conda activate lecory && {python_executable} {script_path} {video_path} {output_video_path}'
     try:
         process = subprocess.Popen(
             command,
@@ -136,16 +136,16 @@ def monitor_log(log_file, task_name):
 # 设定环境路径和脚本路径
 # env_path = r"E:\projectDeeplearning\environment\dl"
 env_path_film = r"d:\anaconda3\envs\dl"
-env_path_super_resolution = ""
-env_path_denoisy = ""
+env_path_super_resolution = r"E:\anaconda\envs\lecory"
+env_path_denoisy = r"E:\anaconda\envs\lecory"
 script_path_film = r"E:\project_g3\deep_learning\projectDeeplearning\frame_generating\film.py"
-script_path_denoise = r"E:\projectDeeplearning\env_bridge\denoise.py"
-script_path_superres = r"SuperResolution\inference_realesrgan_video.py"
+script_path_denoise = r"E:\projectDeeplearning\denoising\main_test_dncnn.py"
+script_path_superres = r"E:\projectDeeplearning\SuperResolution\inference_realesrgan_video.py"
 
 # 日志文件路径
-log_file_film = os.path.join(os.path.dirname(script_path_film), "film.log")
-log_file_denoise = os.path.join(os.path.dirname(script_path_denoise), "denoise.log")
-log_file_superres = os.path.join(os.path.dirname(script_path_superres), "SuperResolution.log")
+log_file_film = os.path.join(os.path.dirname("logs/film.log"), "film.log")
+log_file_denoise = os.path.join(os.path.dirname("logs/denoise.log"), "denoise.log")
+log_file_superres = os.path.join(os.path.dirname("logs/SuperResolution.log"), "SuperResolution.log")
 
 
 def run_film(video_path, output_video_path, aim_fps):
