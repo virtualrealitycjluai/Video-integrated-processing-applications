@@ -43,8 +43,8 @@ def clear_temp_folder(folder):
         print(f"文件夹 {folder} 不存在")
 
 
-temp1 = "temp1"
-temp2 = "temp2"
+temp1_path = os.path.abspath('temp1')
+temp2_path = os.path.abspath('temp2')
 
 
 def confirm(denoise, superres, filter_method, model, output_path, video_path, superres_scale, frame_rate):
@@ -89,17 +89,15 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path, su
     cap.release()
 
     if denoise:
-        ed.run_denoise(video_path, temp1)
-        if not(model or superres):
-            copy_files_from_source_to_destination(temp1, output_path)
+        ed.run_denoise(video_path, temp1_path)
+        if not (model or superres):
+            copy_files_from_source_to_destination(temp1_path, output_path)
     if model:
-        temp2_path = os.path.abspath('temp2')
-        ed.run_film(temp1 if denoise else video_path, temp2_path, frame_rate)
+        ed.run_film(temp1_path if denoise else video_path, temp2_path, frame_rate)
         if not superres:
-            copy_files_from_source_to_destination(temp2, output_path)
+            copy_files_from_source_to_destination(temp2_path, output_path)
     if superres:
-        temp2_path = os.path.abspath('temp2')
-        ed.run_SuperResolution(temp2 if model or denoise else video_path, output_path, superres_scale)
+        ed.run_SuperResolution(temp2_path if model or denoise else video_path, output_path, superres_scale)
 
     print("Finish Process")
 
