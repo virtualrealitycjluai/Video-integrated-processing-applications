@@ -19,7 +19,7 @@
     conda create -n env_1 python == 3.7.6
 ### 1.3 进入虚拟环境
     conda activate env_1
-### 1.4 安装所需的python软件包
+### 1.4 安装插帧功能所需的python软件包
 * pytorch==1.5.1 torchvision==0.6.1
 * cudatoolkit==10.1
 * cupy==7.5.0
@@ -28,6 +28,32 @@
   
   [如何安装python软件包？](https://blog.csdn.net/qq_42692386/article/details/113881379)
     
+### 1.5 安装降噪功能所需要的python软件包
+
+重复1.2和1.3的操作再次新建一个虚拟环境
+* opencv-python
+* scikit-image
+* pillow
+* torchvision
+* hdf5storage
+* ninja
+* lmdb
+* requests
+* timm
+* einops
+
+### 1.6 安装超分功能所需要的python软件包
+
+重复1.2和1.3的操作再次新建一个虚拟环境
+* basicsr>=1.4.2
+* facexlib>=0.2.5
+* gfpgan>=1.3.5
+* numpy
+* opencv-python
+* Pillow
+* torch>=1.7
+* torchvision
+* tqdm
 ## 降噪
 
 ## 超分
