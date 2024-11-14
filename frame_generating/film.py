@@ -5,9 +5,9 @@ from torchvision import transforms
 from model.VFIT_S import UNet_3D_3D
 import sys
 import os
-import gc
 
 print("Numpy version:", np.__version__)
+
 
 def preprocess_frame(frame, device):
     frame_resized = cv2.resize(frame, (256, 256))
@@ -15,13 +15,16 @@ def preprocess_frame(frame, device):
         transforms.ToTensor(),
     ])
     frame_tensor = transform(frame_resized).unsqueeze(0).to(device)
+    # frame_tensor = transform(frame).unsqueeze(0).to(device)
     return frame_tensor
+
 
 def postprocess_frame(tensor):
     frame = tensor.squeeze(0).cpu().detach().numpy()
     frame = np.transpose(frame, (1, 2, 0))
     frame = np.clip(frame * 255.0, 0, 255).astype(np.uint8)
     return frame
+
 
 def frame_interpolation_UNet3D(video_path, output_video_dir, aim_fps):
     output_video_path = os.path.join(output_video_dir, "output.mp4")
@@ -105,12 +108,6 @@ def frame_interpolation_UNet3D(video_path, output_video_dir, aim_fps):
         out.write(interpolated_frame_resized)  # 写入插值帧
         print(f"Written interpolated frame to output.")
 
-        # 释放当前帧数据，减少内存占用
-        del inputs  # 删除输入张量列表
-        del output  # 删除输出张量
-        torch.cuda.empty_cache()  # 清理GPU缓存
-        gc.collect()  # Python垃圾回收
-
         # 读取下一帧并更新帧缓冲区
         ret, next_frame = cap.read()
         if not ret:
@@ -118,16 +115,8 @@ def frame_interpolation_UNet3D(video_path, output_video_dir, aim_fps):
             out.write(frame_buffer[2])  # 写入最后一帧
             break  # 视频结束
 
-        # 更新帧缓冲区
         frame_buffer.pop(0)
         frame_buffer.append(next_frame)
-
-        # 释放已经写入的视频帧
-        del frame_buffer[0]  # 删除已写入的视频帧，减少内存占用
-
-        # 清理缓存
-        torch.cuda.empty_cache()  # 清理GPU缓存
-        gc.collect()  # Python垃圾回收
 
     # 释放资源
     cap.release()
