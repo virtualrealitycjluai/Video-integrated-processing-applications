@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from frame_generating.model.Sep_STS_Encoder import ResBlock
+from model.Sep_STS_Encoder import ResBlock
 
 def joinTensors(X1 , X2 , type="concat"):
 
@@ -73,7 +73,7 @@ class UNet_3D_3D(nn.Module):
         growth = 2 if joinType == "concat" else 1
         self.lrelu = nn.LeakyReLU(0.2, True)
 
-        from frame_generating.model.Sep_STS_Encoder import SepSTSEncoder
+        from model.Sep_STS_Encoder import SepSTSEncoder
         self.encoder = SepSTSEncoder(nf, n_inputs, window_size=ws, nh=nh)
 
         self.decoder = nn.Sequential(
@@ -185,7 +185,7 @@ class SynBlock(nn.Module):
         self.dilation = dilation
 
         self.modulePad = torch.nn.ReplicationPad2d([self.kernel_pad, self.kernel_pad, self.kernel_pad, self.kernel_pad])
-        import frame_generating.cupy_module.adacof as adacof
+        import cupy_module.adacof as adacof
         self.moduleAdaCoF = adacof.FunctionAdaCoF.apply
 
         self.ModuleWeight = Subnet_weight(ks ** 2)
