@@ -140,7 +140,7 @@ def monitor_log(log_file, task_name):
 # env_path = r"E:\projectDeeplearning\environment\dl"
 env_path_film = r"d:\anaconda3\envs\test"
 env_path_super_resolution = r"d:\anaconda3\envs\labelme"
-env_path_denoisy = ""
+env_path_denoisy = r"d:\anaconda3\envs\labelme"
 script_path_film = r"E:\project_g3\deep_learning\projectDeeplearning\frame_generating\film.py"
 script_path_denoise = r"E:\project_g3\deep_learning\projectDeeplearning\denoising\denoise_cmd.py"
 script_path_superres = r"E:\project_g3\deep_learning\projectDeeplearning\SuperResolution\inference_realesrgan_video_cmd.py"
