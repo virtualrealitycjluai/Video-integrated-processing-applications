@@ -91,16 +91,18 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path, su
         if not(model or superres):
             copy_files_from_cache_to_destination(temp1, output_path)
     if model:
-        ed.run_film(temp1 if denoise else video_path, temp2, frame_rate)
+        temp2_path = os.path.abspath('temp2')
+        ed.run_film(temp1 if denoise else video_path, temp2_path, frame_rate)
         if not superres:
             copy_files_from_cache_to_destination(temp2, output_path)
     if superres:
+        temp2_path = os.path.abspath('temp2')
         ed.run_SuperResolution(temp2 if model or denoise else video_path, output_path, superres_scale)
 
     print("Finish Process")
 
-    clear_temp_folder(temp1)
-    clear_temp_folder(temp2)
+    # clear_temp_folder(temp1)
+    # clear_temp_folder(temp2)
 
 
 # run app
