@@ -99,7 +99,7 @@ def run_denoise_task(env_path, script_path, task_name, log_file, video_path, out
     if not os.path.isfile(script_path):
         print(f"错误: 找不到脚本文件：{script_path}")
         return
-    env = os.path.basename()
+    env = os.path.basename(python_executable)
     command = f'conda activate {env} && {python_executable} {script_path} {video_path} {output_video_path}'
     try:
         process = subprocess.Popen(

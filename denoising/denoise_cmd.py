@@ -14,8 +14,10 @@ def run_inference(video_path, output_path):
 
     try:
         # 使用 subprocess 调用外部脚本
-        subprocess.run(cmd, check=True)
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
         print("处理完成！")
+        print("标准输出", result.stdout)
+        print("标准错误", result.stderr)
     except subprocess.CalledProcessError as e:
         print(f"发生错误：{e}")
     except Exception as e:
