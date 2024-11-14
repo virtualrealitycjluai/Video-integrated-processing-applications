@@ -3,7 +3,7 @@ import logging
 import argparse
 import sys
 import cv2
-
+from models.network_dncnn import DnCNN as net
 import numpy as np
 from datetime import datetime
 from collections import OrderedDict
