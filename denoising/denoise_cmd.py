@@ -1,13 +1,15 @@
 import subprocess
 import sys
+import os
 
 
 def run_inference(video_path, output_path):
-
+    video_path = os.path.normpath(video_path)  # 统一路径分隔符
+    output_path = os.path.normpath(output_path)
     cmd = [
         'python', 'denoise.py',
-        '-i', video_path,
-        '-o', output_path,
+         video_path,
+         output_path,
     ]
 
     try:
@@ -18,6 +20,7 @@ def run_inference(video_path, output_path):
         print(f"发生错误：{e}")
     except Exception as e:
         print(f"未知错误：{e}")
+
 
 print(sys.argv)
 video_path = sys.argv[1]
