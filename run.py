@@ -101,8 +101,8 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path, su
 
     print("Finish Process")
 
-    # clear_temp_folder(temp1)
-    # clear_temp_folder(temp2)
+    clear_temp_folder(temp1_path)
+    clear_temp_folder(temp2_path)
 
 
 # run app

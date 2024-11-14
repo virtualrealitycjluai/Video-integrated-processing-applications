@@ -65,8 +65,8 @@ def run_SuperResolution_task(env_path, script_path, task_name, log_file, video_p
     if not os.path.isfile(script_path):
         print(f"错误: 找不到脚本文件：{script_path}")
         return
-
-    command = f'conda activate lecory && {python_executable} {script_path} {video_path} {output_video_path} {superres_scale}'
+    env = os.path.basename(env_path)
+    command = f'conda activate {env} && {python_executable} {script_path} {video_path} {output_video_path} {superres_scale}'
     try:
         process = subprocess.Popen(
             command,
