@@ -346,7 +346,7 @@ def main(video_path, output_video_path, superres):
         default=0.5,
         help=('Denoise strength. 0 for weak denoise (keep noise), 1 for strong denoise ability. '
               'Only used for the realesr-general-x4v3 model'))
-    parser.add_argument('-s', '--outscale', type=float, default=4, help='The final upsampling scale of the image')
+    parser.add_argument('-s', '--outscale', type=float, default=superres, help='The final upsampling scale of the image')
     parser.add_argument('--suffix', type=str, default='out', help='Suffix of the restored video')
     parser.add_argument('-t', '--tile', type=int, default=0, help='Tile size, 0 for no tile during testing')
     parser.add_argument('--tile_pad', type=int, default=10, help='Tile padding')
@@ -371,12 +371,12 @@ def main(video_path, output_video_path, superres):
         help='Image extension. Options: auto | jpg | png, auto means using the same extension as inputs')
     args = parser.parse_args()
 
-    # Set outscale based on superres value
-    if superres in ['2', '3', '4']:
-        args.outscale = int(superres)  # Extract the multiplier as integer (2, 3, or 4)
-    else:
-        print("Invalid superres value. Using default x4 scale.")
-        args.outscale = 4
+    # # Set outscale based on superres value
+    # if superres in ['2', '3', '4']:
+    #     args.outscale = int(superres)  # Extract the multiplier as integer (2, 3, or 4)
+    # else:
+    #     print("Invalid superres value. Using default x4 scale.")
+    #     args.outscale = 4
 
     args.input = args.input.rstrip('/').rstrip('\\')
     os.makedirs(args.output, exist_ok=True)
