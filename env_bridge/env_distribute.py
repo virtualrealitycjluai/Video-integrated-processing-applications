@@ -29,7 +29,8 @@ def run_film_task(env_path, script_path, task_name, log_file, video_path, output
     if not os.path.isfile(script_path):
         print(f"错误: 找不到脚本文件：{script_path}")
         return
-    command = f'conda activate dl && {python_executable} {script_path} {video_path} {output_video_path} {aim_fps}'
+    env = os.path.basename(env_path)
+    command = f'conda activate {env} && {python_executable} {script_path} {video_path} {output_video_path} {aim_fps}'
     try:
         process = subprocess.Popen(
             command,
@@ -64,6 +65,7 @@ def run_SuperResolution_task(env_path, script_path, task_name, log_file, video_p
     if not os.path.isfile(script_path):
         print(f"错误: 找不到脚本文件：{script_path}")
         return
+
     command = f'conda activate lecory && {python_executable} {script_path} {video_path} {output_video_path} {superres_scale}'
     try:
         process = subprocess.Popen(
@@ -97,7 +99,8 @@ def run_denoise_task(env_path, script_path, task_name, log_file, video_path, out
     if not os.path.isfile(script_path):
         print(f"错误: 找不到脚本文件：{script_path}")
         return
-    command = f'conda activate test && {python_executable} {script_path} {video_path} {output_video_path}'
+    env = os.path.basename()
+    command = f'conda activate {env} && {python_executable} {script_path} {video_path} {output_video_path}'
     try:
         process = subprocess.Popen(
             command,
@@ -139,8 +142,8 @@ env_path_film = r"d:\anaconda3\envs\test"
 env_path_super_resolution = r"d:\anaconda3\envs\labelme"
 env_path_denoisy = ""
 script_path_film = r"E:\project_g3\deep_learning\projectDeeplearning\frame_generating\film.py"
-script_path_denoise = r"E:\projectDeeplearning\env_bridge\denoise.py"
-script_path_superres = r"E:\project_g3\deep_learning\projectDeeplearning\SuperResolution\inference_realesrgan_video.py"
+script_path_denoise = r"E:\project_g3\deep_learning\projectDeeplearning\denoising\denoise_cmd.py"
+script_path_superres = r"E:\project_g3\deep_learning\projectDeeplearning\SuperResolution\inference_realesrgan_video_cmd.py"
 
 # 日志文件路径
 log_file_film = os.path.join(os.path.dirname("logs/film.log"), "film.log")

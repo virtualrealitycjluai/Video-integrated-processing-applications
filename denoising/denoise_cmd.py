@@ -2,13 +2,12 @@ import subprocess
 import sys
 
 
-def run_inference(video_path, output_path, superres_scale):
-    # 构建命令行参数
+def run_inference(video_path, output_path):
+
     cmd = [
         'python', 'denoise.py',
         '-i', video_path,
         '-o', output_path,
-        '-s', superres_scale
     ]
 
     try:
@@ -23,11 +22,6 @@ def run_inference(video_path, output_path, superres_scale):
 print(sys.argv)
 video_path = sys.argv[1]
 output_video_path = sys.argv[2]
-superres = sys.argv[3]
-if superres in ['x2', 'x3', 'x4']:
-    superres_new = (superres[1])
-else:
-    print("Invalid superres value. Using default x4 scale.")
-    superres_new = '4'
 
-run_inference(video_path, output_video_path, superres_new)
+
+run_inference(video_path, output_video_path)
