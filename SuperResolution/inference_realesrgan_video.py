@@ -372,8 +372,8 @@ def main(video_path, output_video_path, superres):
     args = parser.parse_args()
 
     # Set outscale based on superres value
-    if superres in ['x2', 'x3', 'x4']:
-        args.outscale = int(superres[1])  # Extract the multiplier as integer (2, 3, or 4)
+    if superres in ['2', '3', '4']:
+        args.outscale = int(superres)  # Extract the multiplier as integer (2, 3, or 4)
     else:
         print("Invalid superres value. Using default x4 scale.")
         args.outscale = 4
