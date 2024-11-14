@@ -3,20 +3,7 @@ import cv2
 from filter import Monochrome, Eye_protection, Color_blindness_pattern
 from env_bridge import env_distribute as ed
 import os
-import tempfile
 import shutil
-import time
-
-
-def generate_unique_path(path):
-    """
-    检查路径是否已存在，若存在则添加时间戳确保唯一性。
-    """
-    if os.path.exists(path):
-        base, ext = os.path.splitext(path)
-        timestamp = int(time.time())
-        path = f"{base}_{timestamp}{ext}"
-    return path
 
 
 def copy_files_from_cache_to_destination(cache_folder, destination_folder):
@@ -37,6 +24,25 @@ def copy_files_from_cache_to_destination(cache_folder, destination_folder):
             # 复制文件到目标路径
             shutil.copy2(cache_file_path, destination_file_path)
             print(f"已复制 {cache_file_path} 到 {destination_file_path}")
+
+
+def clear_temp_folder(folder):
+    """
+    清空指定文件夹中的所有文件和子文件夹，但不删除文件夹本身。
+    """
+    if os.path.exists(folder):
+        for root, dirs, files in os.walk(folder, topdown=False):
+            for name in files:
+                os.remove(os.path.join(root, name))  # 删除文件
+            for name in dirs:
+                os.rmdir(os.path.join(root, name))  # 删除空的子文件夹
+        print(f"已清空文件夹 {folder} 中的所有文件和子文件夹")
+    else:
+        print(f"文件夹 {folder} 不存在")
+
+
+temp1 = "temp1"
+temp2 = "temp2"
 
 
 def confirm(denoise, superres, filter_method, model, output_path, video_path, superres_scale, frame_rate):
@@ -80,23 +86,21 @@ def confirm(denoise, superres, filter_method, model, output_path, video_path, su
             break
     cap.release()
 
-    temp_dir = tempfile.mkdtemp()
-    try:
-        if denoise:
-            ed.run_denoise(video_path, temp_dir)
-            if not(model or superres):
-                copy_files_from_cache_to_destination(temp_dir, output_path)
-        if model:
-            ed.run_film(temp_dir if denoise else video_path, temp_dir, frame_rate)
-            if not superres:
-                copy_files_from_cache_to_destination(temp_dir, output_path)
-        if superres:
-            final_output_path = generate_unique_path(output_path)
-            ed.run_SuperResolution(temp_dir if model or denoise else video_path, final_output_path, superres_scale)
-    finally:
-        shutil.rmtree(temp_dir)
+    if denoise:
+        ed.run_denoise(video_path, temp1)
+        if not(model or superres):
+            copy_files_from_cache_to_destination(temp1, output_path)
+    if model:
+        ed.run_film(temp1 if denoise else video_path, temp2, frame_rate)
+        if not superres:
+            copy_files_from_cache_to_destination(temp2, output_path)
+    if superres:
+        ed.run_SuperResolution(temp2 if model or denoise else video_path, output_path, superres_scale)
 
     print("Finish Process")
+
+    clear_temp_folder(temp1)
+    clear_temp_folder(temp2)
 
 
 # run app

@@ -43,7 +43,7 @@ class Windows(QWidget):
 
         # Super-resolution scale options (x2, x3, x4)
         self.superres_scale_combo = QComboBox()
-        self.superres_scale_combo.addItems(["", "x2", "x3", "x4"])
+        self.superres_scale_combo.addItems(["x2", "x3", "x4"])
         layout.addWidget(QLabel("Select super-resolution scale"))
         layout.addWidget(self.superres_scale_combo)
 
