@@ -1,5 +1,5 @@
 import torch.nn as nn
-from frame_generating.model.Sep_STS_Layer import SepSTSBasicLayer
+from model.Sep_STS_Layer import SepSTSBasicLayer
 
 
 class BasicStem(nn.Sequential):
