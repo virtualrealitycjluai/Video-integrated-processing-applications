@@ -26,7 +26,7 @@ def postprocess_frame(tensor):
     return frame
 
 
-def frame_interpolation_UNet3D(video_path='video/4.mp4', output_video_path='output/output_video.mp4', aim_fps=60):
+def frame_interpolation_UNet3D(video_path, output_video_path, aim_fps):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     # 加载模型
