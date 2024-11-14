@@ -5,10 +5,10 @@ import sys
 def run_inference(video_path, output_path, superres_scale):
     # 构建命令行参数
     cmd = [
-        'python', 'denoise.py',
-        '-i', video_path,
-        '-o', output_path,
-        '-s', superres_scale
+        'python', 'inference_realesrgan_video.py',
+        '-i', video_path,  # 输入视频路径
+        '-o', output_path,  # 输出路径
+        '-s', superres_scale  # 超分辨率倍数
     ]
 
     try:
@@ -28,6 +28,6 @@ if superres in ['x2', 'x3', 'x4']:
     superres_new = (superres[1])
 else:
     print("Invalid superres value. Using default x4 scale.")
-    superres_new = '4'
+    superres_new = '6'
 
 run_inference(video_path, output_video_path, superres_new)
