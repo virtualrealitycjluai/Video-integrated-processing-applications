@@ -68,7 +68,7 @@ def main(video_path, output_video_path):
     # Argument Parsing
     # ----------------------------------------
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_name', type=str, default='dncnn_color_blind',
+    parser.add_argument('--model_name', type=str, default='color',
                         help='dncnn_15, dncnn_25, dncnn_50, dncnn_gray_blind, dncnn_color_blind, dncnn3')
     parser.add_argument('--video_path', type=str, default=video_path, help='video_path')
     parser.add_argument('--testset_name', type=str, default='img', help='test set, bsd68 | set12')
@@ -82,8 +82,10 @@ def main(video_path, output_video_path):
     args = parser.parse_args()
 
     # Create cache directories for frames
-    cache_input_dir = os.path.join(video_path, "input_cache")
-    cache_output_dir = os.path.join(video_path, "output_cache")
+    # 改为获取父目录路径
+    cache_input_dir = os.path.join(os.path.dirname(video_path), "input_cache")
+    cache_output_dir = os.path.join(os.path.dirname(video_path), "output_cache")
+
     os.makedirs(cache_input_dir, exist_ok=True)
     os.makedirs(cache_output_dir, exist_ok=True)
 
@@ -148,7 +150,8 @@ def main(video_path, output_video_path):
     # Get frame size
     sample_frame = cv2.imread(frame_paths[0])
     height, width, layers = sample_frame.shape
-    video_writer = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), original_fps, (width, height))
+    output_video = os.path.join(output_video_path, "_denoise_output.mp4")
+    video_writer = cv2.VideoWriter(output_video, cv2.VideoWriter_fourcc(*'mp4v'), original_fps, (width, height))
 
     for frame_file in frame_paths:
         frame = cv2.imread(frame_file)
@@ -159,6 +162,7 @@ def main(video_path, output_video_path):
 
 
 if __name__ == '__main__':
-    video_path = sys.argv[1]
-    output_video_path = sys.argv[2]
+    print(sys.argv)
+    video_path = sys.argv[2]
+    output_video_path = sys.argv[4]
     main(video_path, output_video_path)
