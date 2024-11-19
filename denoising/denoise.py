@@ -70,20 +70,16 @@ def main(video_path, output_video_path):
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', type=str, default='dncnn_color_blind',
                         help='dncnn_15, dncnn_25, dncnn_50, dncnn_gray_blind, dncnn_color_blind, dncnn3')
+    parser.add_argument('--video_path', type=str, default=video_path, help='video_path')
     parser.add_argument('--testset_name', type=str, default='img', help='test set, bsd68 | set12')
     parser.add_argument('--noise_level_img', type=int, default=50, help='noise level: 15, 25, 50')
     parser.add_argument('--x8', type=bool, default=False, help='x8 to boost performance')
     parser.add_argument('--show_img', type=bool, default=False, help='show the image')
     parser.add_argument('--model_pool', type=str, default='model_zoo', help='path of model_zoo')
-    parser.add_argument('--results', type=str, default='results', help='path of results')
+    parser.add_argument('--results', type=str, default=output_video_path, help='path of results')
     parser.add_argument('--need_degradation', type=bool, default=False, help='add noise or not')
     parser.add_argument('--task_current', type=str, default='dn', help='dn for denoising')
     args = parser.parse_args()
-
-    # Check if video_path exists
-    if not os.path.exists(video_path):
-        print(f"Video path {video_path} does not exist.")
-        return
 
     # Create cache directories for frames
     cache_input_dir = os.path.join(video_path, "input_cache")
